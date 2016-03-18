@@ -17,11 +17,11 @@ use MongoDB\Operation\Find;
  */
 class Bucket
 {
-    protected static $streamWrapper;
+    private static $streamWrapper;
 
-    protected $collectionsWrapper;
-    protected $databaseName;
-    protected $options;
+    private $collectionsWrapper;
+    private $databaseName;
+    private $options;
 
     /**
      * Constructs a GridFS bucket.

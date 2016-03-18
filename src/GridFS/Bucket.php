@@ -19,9 +19,9 @@ class Bucket
 {
     private static $streamWrapper;
 
-    private $collectionsWrapper;
+    protected $collectionsWrapper;
     private $databaseName;
-    private $options;
+    protected $options;
 
     /**
      * Constructs a GridFS bucket.

@@ -18,10 +18,10 @@ class GridFSUpload
     private $buffer;
     private $bufferLength = 0;
     private $chunkOffset = 0;
-    private $chunkSize;
+    protected $chunkSize;
     private $collectionsWrapper;
     private $ctx;
-    private $file;
+    protected $file;
     private $indexChecker;
     private $isClosed = false;
     private $length = 0;
@@ -70,6 +70,16 @@ class GridFSUpload
         $this->buffer = fopen('php://temp', 'w+');
         $this->ctx = hash_init('md5');
 
+        $this->buildFile($filename, $options);
+    }
+
+    /**
+     * Construct the file metadata document using values passed into the constructor.
+     *
+     * @param string $filename File name
+     * @param array  $options  Upload options
+     */
+    protected function buildFile($filename, array $options) {
         $this->file = [
             '_id' => new ObjectId(),
             'chunkSize' => $this->chunkSize,
@@ -195,7 +205,7 @@ class GridFSUpload
     }
 
     // From: http://stackoverflow.com/questions/3656713/how-to-get-current-time-in-milliseconds-in-php
-    private function createUploadDate()
+    protected function createUploadDate()
     {
         $parts = explode(' ', microtime());
         $milliseconds = sprintf('%d%03d', $parts[1], $parts[0] * 1000);

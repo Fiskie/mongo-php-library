@@ -17,11 +17,11 @@ use MongoDB\Operation\Find;
  */
 class Bucket
 {
-    private static $streamWrapper;
+    protected static $streamWrapper;
 
-    private $collectionsWrapper;
-    private $databaseName;
-    private $options;
+    protected $collectionsWrapper;
+    protected $databaseName;
+    protected $options;
 
     /**
      * Constructs a GridFS bucket.
@@ -81,10 +81,10 @@ class Bucket
      * If the files collection document is not found, this method will still
      * attempt to delete orphaned chunks.
      *
-     * @param ObjectId $id ObjectId of the file
+     * @param ObjectId|string $id ID of the file
      * @throws GridFSFileNotFoundException
      */
-    public function delete(ObjectId $id)
+    public function delete($id)
     {
         $file = $this->collectionsWrapper->getFilesCollection()->findOne(['_id' => $id]);
         $this->collectionsWrapper->getFilesCollection()->deleteOne(['_id' => $id]);
@@ -99,11 +99,11 @@ class Bucket
     /**
      * Writes the contents of a GridFS file to a writable stream.
      *
-     * @param ObjectId $id          ObjectId of the file
-     * @param resource $destination Writable Stream
+     * @param ObjectId|string $id          ID of the file
+     * @param resource        $destination Writable Stream
      * @throws GridFSFileNotFoundException
      */
-    public function downloadToStream(ObjectId $id, $destination)
+    public function downloadToStream($id, $destination)
     {
         $file = $this->collectionsWrapper->getFilesCollection()->findOne(
             ['_id' => $id],
@@ -203,11 +203,11 @@ class Bucket
     /**
      * Opens a readable stream for reading a GridFS file.
      *
-     * @param ObjectId $id ObjectId of the file
+     * @param ObjectId|string $id ID of the file
      * @return resource
      * @throws GridFSFileNotFoundException
      */
-    public function openDownloadStream(ObjectId $id)
+    public function openDownloadStream($id)
     {
         $file = $this->collectionsWrapper->getFilesCollection()->findOne(
             ['_id' => $id],
@@ -282,11 +282,11 @@ class Bucket
     /**
      * Renames the GridFS file with the specified ID.
      *
-     * @param ObjectId $id          ID of the file to rename
+     * @param ObjectId|string $id ID of the file to rename
      * @param string   $newFilename New file name
      * @throws GridFSFileNotFoundException
      */
-    public function rename(ObjectId $id, $newFilename)
+    public function rename($id, $newFilename)
     {
         $filesCollection = $this->collectionsWrapper->getFilesCollection();
         $result = $filesCollection->updateOne(['_id' => $id], ['$set' => ['filename' => $newFilename]]);
@@ -306,7 +306,7 @@ class Bucket
      * @param string   $filename File name
      * @param resource $source   Readable stream
      * @param array    $options  Stream options
-     * @return ObjectId
+     * @return ObjectId|string
      */
     public function uploadFromStream($filename, $source, array $options = [])
     {
@@ -343,7 +343,7 @@ class Bucket
         return $file;
     }
 
-    private function openDownloadStreamByFile($file)
+    protected function openDownloadStreamByFile($file)
     {
         $options = [
             'collectionsWrapper' => $this->collectionsWrapper,
